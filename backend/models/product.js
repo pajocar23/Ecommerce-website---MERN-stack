@@ -90,5 +90,5 @@ const productSchema = new mongoose.Schema({
         default:Date.now
     }
 })
-console.log(productSchema);
+
 module.exports = mongoose.model('Product', productSchema);
