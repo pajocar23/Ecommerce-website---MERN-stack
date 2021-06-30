@@ -2,6 +2,7 @@ import React, {Fragment, useEffect} from 'react'
 
 import MetaData from './layout/MetaData'
 import Product from './product/Product'
+import Loader from './layout/Loader'
 
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,7 +20,7 @@ export const Home = () => {
 
     return (
         <Fragment>
-            {loading? <h1>Loading...</h1> :(
+            {loading? <Loader/> :(
                 <Fragment>
                     <MetaData title = {'Kupite slatke oktopode'}/>
 
