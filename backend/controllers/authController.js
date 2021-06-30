@@ -5,7 +5,8 @@ const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const sendToken = require('../utils/jwtToken');
 const sendEmail = require('../utils/sendEmail')
 
-const crypto = require('crypto')
+const crypto = require('crypto');
+const { send } = require('process');
 
 //Register a user => /api/v1/register
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -130,6 +131,57 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 
 })
 
+//Get currently logged user in details => api/v1/me
+exports.getUserProfile = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+        success: true,
+        user
+    })
+})
+
+//Update /Change password =>/api/v1/password/update
+exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.user.id).select('+password');
+
+    //Check previous user password
+    const isMatched = await user.comparePassword(req.body.oldPassword)
+
+    if (!isMatched) {
+        return next(new ErrorHandler('Old password is incorrect', 400));
+    }
+
+    user.password = req.body.password;
+    await user.save();
+
+    sendToken(user, 200, res)
+
+})
+
+
+// Update user profile =? api/v1/me/update
+exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
+    const newUserData = {
+        name: req.body.name,
+        email: req.body.email
+    }
+
+    //Update avatar: TODO
+
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
+    res.status(200).json({
+        success: true
+    })
+
+
+})
+
 
 //Logouut user => /api/v1/logout
 
@@ -145,3 +197,32 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
         message: "Logged out"
     })
 })
+
+//Admin routes
+
+
+//Get all users =>api/v1/admin/users
+exports.allUsers = catchAsyncErrors(async (req, res, next) => {
+    const users = await User.find();
+
+    res.status(200).json({
+        success: true,
+        users
+    })
+})
+
+//Get user details => /api/v1/admin/user/:id
+exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+        return next(new ErrorHandler(`User with that id does not exist: ${req.params.id}`))
+    }
+    
+    res.status(200).json({
+        success: true,
+        user
+    })
+
+})
+
