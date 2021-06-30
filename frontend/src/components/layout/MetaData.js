@@ -3,7 +3,8 @@ import {Helmet} from 'react-helmet'
 export const MetaData = ({title}) => {
     return (
         <Helmet>
-            <title>{'Oktopod Shop'}</title>
+            <title>{`${title} - Oktopod Shop`}</title>
         </Helmet>
     )
 }
+export default MetaData
