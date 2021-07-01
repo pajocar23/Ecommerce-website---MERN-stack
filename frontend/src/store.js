@@ -3,21 +3,21 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { productsReducer, productDetailsReducer } from './reducers/productReducers'
 
-import { authReducer } from './reducers/userReducers';
+import { authReducer, userReducer, forgotPasswordReducer } from './reducers/userReducers';
 
 
 
 const reducer = combineReducers({
     products: productsReducer,
     productDetails: productDetailsReducer,
-    auth:authReducer
-
-
+    auth: authReducer,
+    user: userReducer,
+    forgotPasswordReducer: forgotPasswordReducer
 })
 
-let initialState =  {}
+let initialState = {}
 
-const middleware = [ thunk ]
+const middleware = [thunk]
 const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(...middleware)))
 
 export default store;

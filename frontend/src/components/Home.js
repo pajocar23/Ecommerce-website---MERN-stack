@@ -70,7 +70,7 @@ export const Home = ({ match }) => {
                 <Fragment>
                     <MetaData title={'Kupite slatke oktopode'} />
 
-                    <h1 id="products_heading">Najnoviji oktopodi</h1>
+                    <h1 id="products_heading">Products</h1>
                     <section id="products" className="container mt-5">
                         <div className="row">
 

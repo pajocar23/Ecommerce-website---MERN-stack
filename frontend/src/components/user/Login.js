@@ -22,8 +22,7 @@ const Login = ({ history }) => {
 
         if (isAuthenticated) {
             history.push('/')
-        }
-
+        }    
         if (error) {
             alert.error(error);
             dispatch(clearErrors());

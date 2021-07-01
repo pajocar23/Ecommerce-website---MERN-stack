@@ -36,7 +36,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 })
 
 
-//Login User =>/a[i/v1/login
+//Login User =>/api/v1/login
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     const { email, password } = req.body;
 
@@ -60,6 +60,11 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     }
 
     sendToken(user, 200, res)
+
+    res.status(200).json({
+        success: true,
+        message: "Logged in"
+    })
 })
 
 //Forgot password => /api/v1/password/forgot
@@ -151,6 +156,7 @@ exports.getUserProfile = catchAsyncErrors(async (req, res, next) => {
 
 //Update /Change password =>/api/v1/password/update
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
+
     const user = await User.findById(req.user.id).select('+password');
 
     //Check previous user password
@@ -162,6 +168,7 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
 
     user.password = req.body.password;
     await user.save();
+
 
     sendToken(user, 200, res)
 
@@ -175,7 +182,24 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
         email: req.body.email
     }
 
-    //Update avatar: TODO
+    //Update avatar
+    if(req.body.avatar!==''){
+        const user=await User.findById(req.user.id)
+
+        const image_id=user.avatar.public_id;
+        const res=await cloudinary.v2.uploader.destroy(image_id);
+
+        const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+            folder: 'avatars',
+            width: 150,
+            crop: "scale"
+        })
+
+        newUserData.avatar={
+            public_id:result.public_id,
+            url: result.secure_url
+        }
+    }
 
     const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
         new: true,
