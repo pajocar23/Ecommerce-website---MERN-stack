@@ -20,6 +20,7 @@ import ForgotPassword from './components/user/ForgotPassword';
 import NewPassword from './components/user/NewPassword';
 
 import Dashboard from './components/admin/Dashboards';
+import ProductsList from './components/admin/ProductsList';
 
 import ProtectedRoute from './components/route/ProtectedRoute';
 
@@ -55,6 +56,7 @@ function App() {
         </div>
 
         <ProtectedRoute path="/dashboard" isAdmin={true} component={Dashboard} exact />
+        <ProtectedRoute path="/admin/products" isAdmin={true} component={ProductsList} exact />
 
         <Footer />
       </div>
