@@ -19,42 +19,47 @@ import UpdatePassword from './components/user/UpdatePassword'
 import ForgotPassword from './components/user/ForgotPassword';
 import NewPassword from './components/user/NewPassword';
 
+import Dashboard from './components/admin/Dashboards';
+
 import ProtectedRoute from './components/route/ProtectedRoute';
 
-import { loadUser }from './actions/userActions'
+import { loadUser } from './actions/userActions'
 import store from './store'
 
 function App() {
 
-  useEffect(()=>{
+  useEffect(() => {
     store.dispatch(loadUser())
-  },[])
+  }, [])
 
-    return (
-      <Router>
-        <div className="App">
-          <Header />
-          <div className="container container-fluid">
-            <Route path="/" component={Home} exact />
-            <Route path="/search/:keyword" component={Home} />
-            <Route path="/product/:id" component={ProductDetails} exact />
+  return (
+    <Router>
+      <div className="App">
+        <Header />
+        <div className="container container-fluid">
+          <Route path="/" component={Home} exact />
+          <Route path="/search/:keyword" component={Home} />
+          <Route path="/product/:id" component={ProductDetails} exact />
 
-            <ProtectedRoute path="/cart" component={Cart} exact />
-            <ProtectedRoute path="/shipping" component={Shipping} />
-            <ProtectedRoute path="/order/confirm" component={ConfirmOrder} />
+          <ProtectedRoute path="/cart" component={Cart} exact />
+          <ProtectedRoute path="/shipping" component={Shipping} />
+          <ProtectedRoute path="/order/confirm" component={ConfirmOrder} />
 
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
-            <Route path="/password/forgot" component={ForgotPassword} />
-            <Route path="/password/reset/:token" component={NewPassword} />
-            <ProtectedRoute path="/me" component={Profile} exact/>
-            <ProtectedRoute path="/me/update" component={UpdateProfile} exact/>
-            <ProtectedRoute path="/password/update" component={UpdatePassword} exact/>
-          </div>
-          <Footer />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <Route path="/password/forgot" component={ForgotPassword} />
+          <Route path="/password/reset/:token" component={NewPassword} />
+          <ProtectedRoute path="/me" component={Profile} exact />
+          <ProtectedRoute path="/me/update" component={UpdateProfile} exact />
+          <ProtectedRoute path="/password/update" component={UpdatePassword} exact />
         </div>
-      </Router>
-    );
-  }
+
+        <ProtectedRoute path="/dashboard" isAdmin={true} component={Dashboard} exact />
+
+        <Footer />
+      </div>
+    </Router>
+  );
+}
 
 export default App;
