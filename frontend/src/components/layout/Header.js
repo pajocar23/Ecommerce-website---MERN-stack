@@ -3,7 +3,7 @@ import { Route, Link } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { useAlert } from 'react-alert'
-import {logout} from '../../actions/userActions'
+import { logout } from '../../actions/userActions'
 
 import Search from './Search'
 
@@ -12,8 +12,9 @@ function Header() {
     const dispatch = useDispatch();
 
     const { user, loading } = useSelector(state => state.auth)
+    const { cartItems } = useSelector(state => state.cart)
 
-    const logoutHandler=()=>{
+    const logoutHandler = () => {
         dispatch(logout());
         alert.success('Logged out succesfully.')
     }
@@ -37,14 +38,14 @@ function Header() {
 
                     <Link to="/cart" style={{ textDecoration: 'none' }}>
                         <span id="cart" className="ml-3">Cart</span>
-                        <span className="ml-1" id="cart_count">2</span>
+                        <span className="ml-1" id="cart_count">{cartItems.length}</span>
                     </Link>
 
 
                     {user ? (
                         <div className="ml-4 dropdown d-inline">
-                            <Link to="#!" className="btn dropdown-toggle text-white mr-4" 
-                            type="button" id="dropDownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <Link to="#!" className="btn dropdown-toggle text-white mr-4"
+                                type="button" id="dropDownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
                                 <figure className="avatar avatar-nav">
                                     <img
@@ -59,13 +60,13 @@ function Header() {
                             <div className="dropdown-menu" aria-labelledby="dropDownMenuButton">
 
 
-                                {user && user.role!=='admin' ? (
+                                {user && user.role !== 'admin' ? (
                                     <Link className="dropdown-item" to="/orders/me">Orders</Link>
-                                ): (
-                                    <Link className="dropdown-item" to="/dashboard">Dashboard</Link> 
+                                ) : (
+                                    <Link className="dropdown-item" to="/dashboard">Dashboard</Link>
                                 )}
 
-                                <Link className="dropdown-item" to="/me">Profile</Link> 
+                                <Link className="dropdown-item" to="/me">Profile</Link>
                                 <Link className="dropdown-item text-danger" to="/" onClick={logoutHandler}>
                                     Logout
                                 </Link>
