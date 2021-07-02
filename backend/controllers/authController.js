@@ -42,21 +42,36 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 
     //Checks if email and password is entered by user
     if (!email || !password) {
-        return next(new ErrorHandler('Please enter email & password', 400))
+        //return next(new ErrorHandler('Please enter email & password', 400))
+        res.status(400).json({
+            success: false,
+            message: "Please enter email & password"
+        })
+        return;
     }
 
     //Finding user in database
     const user = await User.findOne({ email }).select('+password')
 
     if (!user) {
-        return next(new ErrorHandler('Invalid Email or Password', 401));
+        //return next(new ErrorHandler('Invalid Email or Password', 401));
+        res.status(401).json({
+            success: false,
+            message: "Invalid Email or Password"
+        })
+        return;
     }
 
     //Checks if password is correct or not
     const isPasswordMatched = await user.comparePassword(password);
 
     if (!isPasswordMatched) {
-        return next(new ErrorHandler('Invalid Email or Password', 401));
+        //return next(new ErrorHandler('Invalid Email or Password', 401));
+        res.status(401).json({
+            success: false,
+            message: "Invalid Email or Password"
+        })
+        return;
     }
 
     sendToken(user, 200, res)
@@ -163,7 +178,13 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
     const isMatched = await user.comparePassword(req.body.oldPassword)
 
     if (!isMatched) {
-        return next(new ErrorHandler('Old password is incorrect', 400));
+        //return next(new ErrorHandler('Old password is incorrect', 400));
+        res.status(400).json({
+            success: false,
+            isUpdated: false,
+            message: "Old password is incorrect"
+        })
+        return;
     }
 
     user.password = req.body.password;
@@ -171,6 +192,10 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
 
 
     sendToken(user, 200, res)
+    res.status(200).json({
+        success: true,
+        isUpdated: true
+    })
 
 })
 
@@ -183,11 +208,11 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
     }
 
     //Update avatar
-    if(req.body.avatar!==''){
-        const user=await User.findById(req.user.id)
+    if (req.body.avatar !== '') {
+        const user = await User.findById(req.user.id)
 
-        const image_id=user.avatar.public_id;
-        const res=await cloudinary.v2.uploader.destroy(image_id);
+        const image_id = user.avatar.public_id;
+        const res = await cloudinary.v2.uploader.destroy(image_id);
 
         const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
             folder: 'avatars',
@@ -195,8 +220,8 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
             crop: "scale"
         })
 
-        newUserData.avatar={
-            public_id:result.public_id,
+        newUserData.avatar = {
+            public_id: result.public_id,
             url: result.secure_url
         }
     }
