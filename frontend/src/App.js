@@ -21,17 +21,23 @@ import NewPassword from './components/user/NewPassword';
 
 import Dashboard from './components/admin/Dashboards';
 import ProductsList from './components/admin/ProductsList';
+import NewProduct from './components/admin/NewProduct';
 
 import ProtectedRoute from './components/route/ProtectedRoute';
 
 import { loadUser } from './actions/userActions'
+import { useSelector } from 'react-redux'
+
 import store from './store'
+import { userReducer } from './reducers/userReducers';
 
 function App() {
 
   useEffect(() => {
     store.dispatch(loadUser())
   }, [])
+
+  const { user, loading }= useSelector(state => state.auth)
 
   return (
     <Router>
@@ -57,8 +63,11 @@ function App() {
 
         <ProtectedRoute path="/dashboard" isAdmin={true} component={Dashboard} exact />
         <ProtectedRoute path="/admin/products" isAdmin={true} component={ProductsList} exact />
+        <ProtectedRoute path="/admin/product" isAdmin={true} component={NewProduct} exact />
 
-        <Footer />
+        {!loading && user.role !== 'admin' && (
+          <Footer />
+        )}
       </div>
     </Router>
   );
