@@ -22,6 +22,7 @@ import NewPassword from './components/user/NewPassword';
 import Dashboard from './components/admin/Dashboards';
 import ProductsList from './components/admin/ProductsList';
 import NewProduct from './components/admin/NewProduct';
+import UpdateProduct from './components/admin/UpdateProduct';
 
 import ProtectedRoute from './components/route/ProtectedRoute';
 
@@ -64,6 +65,7 @@ function App() {
         <ProtectedRoute path="/dashboard" isAdmin={true} component={Dashboard} exact />
         <ProtectedRoute path="/admin/products" isAdmin={true} component={ProductsList} exact />
         <ProtectedRoute path="/admin/product" isAdmin={true} component={NewProduct} exact />
+        <ProtectedRoute path="/admin/product/:id" isAdmin={true} component={UpdateProduct} exact />
 
         {!loading && user.role !== 'admin' && (
           <Footer />
