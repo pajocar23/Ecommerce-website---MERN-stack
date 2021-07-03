@@ -23,6 +23,10 @@ import Dashboard from './components/admin/Dashboards';
 import ProductsList from './components/admin/ProductsList';
 import NewProduct from './components/admin/NewProduct';
 import UpdateProduct from './components/admin/UpdateProduct';
+import UsersList from './components/admin/UsersList';
+import UpdateUser from './components/admin/UpdateUser';
+
+import ProductReviews from './components/admin/ProductReviews';
 
 import ProtectedRoute from './components/route/ProtectedRoute';
 
@@ -38,7 +42,7 @@ function App() {
     store.dispatch(loadUser())
   }, [])
 
-  const { user, loading }= useSelector(state => state.auth)
+  const { user, isAuthenticated, loading } = useSelector(state => state.auth)
 
   return (
     <Router>
@@ -49,7 +53,7 @@ function App() {
           <Route path="/search/:keyword" component={Home} />
           <Route path="/product/:id" component={ProductDetails} exact />
 
-          <ProtectedRoute path="/cart" component={Cart} exact />
+          <Route path="/cart" component={Cart} exact />
           <ProtectedRoute path="/shipping" component={Shipping} />
           <ProtectedRoute path="/order/confirm" component={ConfirmOrder} />
 
@@ -66,8 +70,12 @@ function App() {
         <ProtectedRoute path="/admin/products" isAdmin={true} component={ProductsList} exact />
         <ProtectedRoute path="/admin/product" isAdmin={true} component={NewProduct} exact />
         <ProtectedRoute path="/admin/product/:id" isAdmin={true} component={UpdateProduct} exact />
+        <ProtectedRoute path="/admin/users" isAdmin={true} component={UsersList} exact />
+        <ProtectedRoute path="/admin/user/:id" isAdmin={true} component={UpdateUser} exact />
+        <ProtectedRoute path="/admin/reviews" isAdmin={true} component={ProductReviews} exact />
 
-        {!loading && user.role !== 'admin' && (
+
+        {!loading && (!isAuthenticated || user.role !== 'admin') && (
           <Footer />
         )}
       </div>
